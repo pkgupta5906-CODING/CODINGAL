@@ -11,3 +11,5 @@ result=1
 for i in range(power):
     result=result*base
 print("The result is ",result)
+#Analysis:
+#method 1 is the fatsest.For small numbers,we might not notice much difference.But for large numbers its visible
