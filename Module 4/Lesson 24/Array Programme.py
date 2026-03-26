@@ -18,7 +18,9 @@ array_num=arr.array('i',[1,3,5,3,7,9,3])
 
 count_3=array_num.count(3)
 
-reversed_array=array_num[::-1]
+reversed_array=array_num[::-1] 
+array_num.reverse()
+print('Reversed array is :',array_num)
 
 print("Original array : ",array_num)
 print("Count of 3 : ",count_3)
