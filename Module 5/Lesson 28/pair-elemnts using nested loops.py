@@ -1,5 +1,5 @@
 class pair_elemants:
-    def sum(self,nums,sum):
+    def sum_num(self,nums,sum):
          
 
         for i in range(len(nums)):
@@ -9,7 +9,7 @@ class pair_elemants:
 
 value=int(input("enter a sum : "))
 obj=pair_elemants()
-result=obj.sum((10,20,30,40,50,60,70),value)
+result=obj.sum_num((10,20,30,40,50,60,70),value)
 if result:
     print("index 1 is equal to",result[0],"index 2 is equal to ",result[1])
 else:
