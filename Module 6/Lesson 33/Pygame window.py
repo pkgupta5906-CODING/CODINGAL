@@ -1,0 +1,17 @@
+# Write a Python program to create an empty Pygame window.
+
+import pygame
+
+pygame.init()
+screen=pygame.display.set_mode((300,200))
+done=False
+while not done:
+    for event in pygame.event.get():
+        if event.type==pygame.QUIT:
+            pygame.quit()
+            done=True
+    screen.fill((255,255,255))
+    pygame.display.flip()
+
+        
+        
