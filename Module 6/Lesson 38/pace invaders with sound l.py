@@ -1,4 +1,4 @@
-# Space Invader — Score increases when Player collides with Enemy
+# Space Invader with Music, Sounds, and Double Bullets
 
 import math
 import random
@@ -13,12 +13,22 @@ ENEMY_START_Y_MIN = 50
 ENEMY_START_Y_MAX = 150
 ENEMY_SPEED_X = 4
 ENEMY_SPEED_Y = 40
-COLLISION_DISTANCE = 40   # slightly bigger for player collision
+BULLET_SPEED_Y = 10
+COLLISION_DISTANCE = 27
 
 # Initialize Pygame
 pygame.init()
+pygame.mixer.init()
 
-# Create screen
+# Background Music
+pygame.mixer.music.load('background_music.mp3')
+pygame.mixer.music.play(-1)  # Loop forever
+
+# Sound Effects
+bullet_sound = pygame.mixer.Sound('laser.wav')
+explosion_sound = pygame.mixer.Sound('explosion.wav')
+
+# Create the screen
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
 # Background
@@ -41,7 +51,6 @@ enemyX = []
 enemyY = []
 enemyX_change = []
 enemyY_change = []
-
 num_of_enemies = 6
 
 for i in range(num_of_enemies):
@@ -51,13 +60,16 @@ for i in range(num_of_enemies):
     enemyX_change.append(ENEMY_SPEED_X)
     enemyY_change.append(ENEMY_SPEED_Y)
 
+# Bullet
+bulletImg = pygame.image.load('bullet.png')
+bullets = []
+
 # Score
 score_value = 0
 font = pygame.font.Font('freesansbold.ttf', 32)
 
 # Game Over Text
 over_font = pygame.font.Font('freesansbold.ttf', 64)
-
 
 def show_score(x, y):
     score = font.render(
@@ -67,7 +79,6 @@ def show_score(x, y):
     )
     screen.blit(score, (x, y))
 
-
 def game_over_text():
     over_text = over_font.render(
         "GAME OVER",
@@ -76,19 +87,16 @@ def game_over_text():
     )
     screen.blit(over_text, (200, 250))
 
-
 def player(x, y):
     screen.blit(playerImg, (x, y))
-
 
 def enemy(x, y, i):
     screen.blit(enemyImg[i], (x, y))
 
-
-def isCollision(x1, y1, x2, y2):
+def isCollision(enemyX, enemyY, bulletX, bulletY):
     distance = math.sqrt(
-        (x1 - x2) ** 2 +
-        (y1 - y2) ** 2
+        (enemyX - bulletX) ** 2 +
+        (enemyY - bulletY) ** 2
     )
     return distance < COLLISION_DISTANCE
 
@@ -114,6 +122,14 @@ while running:
 
             if event.key == pygame.K_RIGHT:
                 playerX_change = 5
+
+            if event.key == pygame.K_SPACE:
+                # Play shooting sound
+                bullet_sound.play()
+
+                # Fire 2 bullets
+                bullets.append([playerX + 5, playerY])
+                bullets.append([playerX + 35, playerY])
 
         # Key Release
         if event.type == pygame.KEYUP:
@@ -155,28 +171,47 @@ while running:
             enemyY[i] += ENEMY_SPEED_Y
 
 
-        # Player–Enemy Collision
-        if isCollision(
-            playerX,
-            playerY,
-            enemyX[i],
-            enemyY[i]
-        ):
+        # Collision
+        for bullet in bullets[:]:
 
-            score_value += 1
+            if isCollision(
+                enemyX[i],
+                enemyY[i],
+                bullet[0],
+                bullet[1]
+            ):
 
-            # Respawn enemy
-            enemyX[i] = random.randint(
-                0,
-                SCREEN_WIDTH - 64
-            )
+                explosion_sound.play()
 
-            enemyY[i] = random.randint(
-                ENEMY_START_Y_MIN,
-                ENEMY_START_Y_MAX
-            )
+                bullets.remove(bullet)
+
+                score_value += 1
+
+                enemyX[i] = random.randint(
+                    0,
+                    SCREEN_WIDTH - 64
+                )
+
+                enemyY[i] = random.randint(
+                    ENEMY_START_Y_MIN,
+                    ENEMY_START_Y_MAX
+                )
 
         enemy(enemyX[i], enemyY[i], i)
+
+
+    # Bullet Movement
+    for bullet in bullets[:]:
+
+        bullet[1] -= BULLET_SPEED_Y
+
+        screen.blit(
+            bulletImg,
+            (bullet[0], bullet[1])
+        )
+
+        if bullet[1] <= 0:
+            bullets.remove(bullet)
 
 
     # Draw Player
