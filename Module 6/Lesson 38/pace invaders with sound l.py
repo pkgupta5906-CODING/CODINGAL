@@ -21,12 +21,12 @@ pygame.init()
 pygame.mixer.init()
 
 # Background Music
-pygame.mixer.music.load('background_music.mp3')
+pygame.mixer.music.load('background.mp3')
 pygame.mixer.music.play(-1)  # Loop forever
 
 # Sound Effects
 bullet_sound = pygame.mixer.Sound('laser.wav')
-explosion_sound = pygame.mixer.Sound('explosion.wav')
+explosion_sound = pygame.mixer.Sound('bullet.wav')
 
 # Create the screen
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
